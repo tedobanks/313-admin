@@ -57,6 +57,40 @@ export const uploadFilesToFirebase = (files, onProgress, onComplete, onError) =>
     });
 };
 
+// Function to upload multiple files to Firebase Storage
+export const uploadCatergoryImageToStorage = (file, onProgress, onComplete, onError) => {
+    const fileRef = storageRef(storage, `category/${file.name}`);
+    const uploadTask = uploadBytesResumable(fileRef, file);
+
+    uploadTask.on(
+        'state_changed',
+        (snapshot) => {
+            const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+            if (onProgress) {
+                onProgress(progress); // Pass index and progress to track each file
+            }
+        },
+        (error) => {
+            if (onError) {
+                onError(error); // Pass index and error to track each file
+            }
+        },
+        async () => {
+            try {
+                const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+                if (onComplete) {
+                    onComplete(downloadURL); // Pass index and downloadURL to track each file
+                }
+            } catch (error) {
+                if (onError) {
+                    onError(error);
+                }
+            }
+        }
+    );
+
+};
+
 // Function to add a product to Firestore
 export const addProductToFirestore = async (product) => {
     try {
@@ -67,12 +101,32 @@ export const addProductToFirestore = async (product) => {
     }
 };
 
+export const addCategoryToFirestore = async (category) => {
+    try {
+        const docRef = await addDoc(collection(db, "categories"), category)
+        return docRef
+    } catch (error) {
+        throw new Error(`Failed to add category: ${error.message}`);
+    }
+}
+
 export const getAllProductsFromFirestore = async () => {
     try {
         const productsCollection = collection(db, "products");
         const productsSnapshot = await getDocs(productsCollection);
         const productsList = productsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
         return productsList;
+    } catch (error) {
+        throw new Error(`Failed to retrieve products: ${error.message}`);
+    }
+};
+
+export const getAllCategoriesFromFirestore = async () => {
+    try {
+        const categoriesCollection = collection(db, "categories");
+        const categoriesSnapshot = await getDocs(categoriesCollection);
+        const categoriesList = categoriesSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        return categoriesList;
     } catch (error) {
         throw new Error(`Failed to retrieve products: ${error.message}`);
     }

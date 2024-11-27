@@ -4,6 +4,8 @@ import ImageUploadView from '../views/image_upload.vue'
 import ProductInfoView from '../views/product_info.vue'
 import Home from '@/views/home.vue'
 import EditProduct from '@/views/edit.vue'
+import CategoryImageUpload from '@/views/category_image_upload.vue'
+import CategoryInfo from '@/views/category_info.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -33,6 +35,16 @@ const router = createRouter({
       path: '/productinfo',
       name: 'info',
       component: ProductInfoView
+    },
+    {
+      path: '/categoryimageupload',
+      name: 'categoryimageupload',
+      component: CategoryImageUpload
+    },
+    {
+      path: '/categoryinfo',
+      name: 'categoryinfo',
+      component: CategoryInfo
     }
   ]
 })

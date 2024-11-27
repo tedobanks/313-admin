@@ -24,6 +24,10 @@ const createEvent = () => {
     router.push("/imageupload");
 };
 
+const createCategoryEvent = () => {
+    router.push("/categoryimageupload");
+};
+
 const logoutEvent = () => {
     router.push({ name: "login" }).then(() => {
         history.pushState(null, null, location.href);
@@ -85,6 +89,9 @@ onMounted(() => {
         <div class="header-section">
             <div class="logo-container"></div>
             <div class="header-second-section">
+                <button @click="createCategoryEvent" id="new-prod">
+                    Create New Category
+                </button>
                 <button @click="createEvent" id="new-prod">
                     Create New Product
                 </button>
@@ -166,6 +173,7 @@ onMounted(() => {
 #new-prod {
     height: 70%;
     padding-inline: 1.25rem;
+    margin-left: 0.625rem;
     border-radius: 8px;
     font-family: "Raleway", sans-serif;
     font-optical-sizing: auto;

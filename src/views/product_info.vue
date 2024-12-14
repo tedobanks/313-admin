@@ -53,9 +53,12 @@ const submitProductInfo = async () => {
     // Save colors before proceeding
     saveColors();
 
+    // Replace line breaks with explicit characters when saving
+    const formattedDescription = productDescription.value.replace(/\n/g, "\\n");
+
     const product = {
         name: productName.value,
-        description: productDescription.value,
+        description: formattedDescription,
         price: productPrice.value,
         quantity: productQuantity.value,
         imageUrls: store.uploadedUrls, // Include uploaded image URLs from the global store
@@ -100,13 +103,13 @@ onMounted(() => {
                 id="name"
                 placeholder="Name"
             />
-            <input
+            <textarea
                 v-model="productDescription"
-                type="text"
                 name="desc"
                 id="desc"
                 placeholder="Description"
-            />
+                rows="4"
+            ></textarea>
             <input
                 v-model="productPrice"
                 type="text"
@@ -188,7 +191,8 @@ onMounted(() => {
 }
 
 input,
-select {
+select,
+textarea {
     width: 100%;
     height: 50px;
     background-color: transparent;
@@ -200,6 +204,10 @@ select {
     font-size: 15px;
     color: white;
     margin-bottom: 20px;
+}
+
+textarea {
+    height: auto;
 }
 
 /* Styling the dropdown options */

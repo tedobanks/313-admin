@@ -1,5 +1,5 @@
 <script setup>
-import { ref, inject, onMounted } from "vue";
+import { ref, inject, computed, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import {
     addProductToFirestore,
@@ -15,6 +15,8 @@ const categories = ref([]);
 const allSizes = ["XXS", "XS", "S", "M", "L", "XL", "XXL", "3XL", "4XL", "5XL"];
 const colorInput = ref(""); // Raw input from the admin
 
+const maintenanceFee = 2000;
+
 const productName = ref("");
 const productDescription = ref("");
 const productPrice = ref("");
@@ -25,6 +27,11 @@ const productColors = ref([]);
 
 // Inject the global store
 const store = inject("store");
+
+const totalPrice = computed(() => {
+    const basePrice = parseFloat(productPrice.value.replace(/,/g, '')) || 0;
+    return basePrice + maintenanceFee;
+});
 
 const saveColors = () => {
     if (colorInput.value.trim()) {
@@ -59,7 +66,7 @@ const submitProductInfo = async () => {
     const product = {
         name: productName.value,
         description: formattedDescription,
-        price: productPrice.value,
+        price: totalPrice.value,
         quantity: productQuantity.value,
         imageUrls: store.uploadedUrls, // Include uploaded image URLs from the global store
         category: productCategory.value,
